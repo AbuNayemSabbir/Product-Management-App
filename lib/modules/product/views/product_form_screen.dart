@@ -34,47 +34,113 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(Get.arguments?.id == null ? 'Add Product' : 'Edit Product'),
+        elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Name'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter product name';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter product description';
-                  }
-                  return null;
-                },
-                maxLines: 3,
-              ),
-              Obx(() => SwitchListTile(
-                title: const Text('Available'),
-                value: _isAvailable.value,
-                onChanged: (value) => _isAvailable.value = value,
-              )),
-              const SizedBox(height: 20),
-              Obx(() => _controller.isLoading.value
-                  ? const CircularProgressIndicator()
-                  : ElevatedButton(
-                      onPressed: _saveProduct,
-                      child: const Text('Save Product'),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 16),
+                const Text(
+                  'Product Information',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Product Name',
+                    prefixIcon: const Icon(Icons.inventory),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter product name';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _descriptionController,
+                  decoration: InputDecoration(
+                    labelText: 'Description',
+                    prefixIcon: const Icon(Icons.description),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter product description';
+                    }
+                    return null;
+                  },
+                  maxLines: 4,
+                ),
+                const SizedBox(height: 20),
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Obx(() => CheckboxListTile(
+                      title: const Text('Product Available'),
+                      subtitle: const Text('Check if product is in stock'),
+                      value: _isAvailable.value,
+                      onChanged: (value) => _isAvailable.value = value ?? false,
+                      activeColor: Colors.teal,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                     )),
-            ],
+                  ),
+                ),
+                const SizedBox(height: 40),
+                Obx(() => SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: _controller.isLoading.value ? null : _saveProduct,
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      elevation: 3,
+                    ),
+                    child: _controller.isLoading.value
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text(
+                            'SAVE PRODUCT',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                  ),
+                )),
+              ],
+            ),
           ),
         ),
       ),

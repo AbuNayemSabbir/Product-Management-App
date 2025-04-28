@@ -12,8 +12,9 @@ import 'modules/product/views/product_list_screen.dart';
 import 'modules/product/views/product_form_screen.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -22,9 +23,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Product Management',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal,
       ),
       initialBinding: AppBindings(),
       getPages: [
@@ -41,14 +43,16 @@ class AppBindings extends Bindings {
     // Core
     Get.lazyPut(() => DioClient());
     Get.lazyPut(() => LocalStorage());
-    Get.lazyPut(() => ConnectivityUtils(), fenix: true);
+    Get.put(ConnectivityUtils(), permanent: true);
     
     // Services
     Get.lazyPut(() => ApiProvider());
-    Get.lazyPut(() => SyncService());
     
-    // Repositories
-    Get.lazyPut(() => ProductRepository());
+    // Repositories - initialize before services that depend on them
+    Get.put(ProductRepository(), permanent: true);
+    
+    // Services that depend on repositories
+    Get.put(SyncService(), permanent: true);
     
     // Controllers
     Get.lazyPut(() => ProductController());

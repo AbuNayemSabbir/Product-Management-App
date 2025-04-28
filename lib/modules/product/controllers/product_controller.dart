@@ -11,7 +11,10 @@ class ProductController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadProducts();
+    // Add a small delay to ensure dependencies are ready
+    Future.delayed(Duration(milliseconds: 100), () {
+      loadProducts();
+    });
   }
 
   Future<void> loadProducts() async {

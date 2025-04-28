@@ -1,13 +1,13 @@
 class Product {
   final int? id;
-  final int tenantId;
+  final int? tenantId;
   final String name;
   final String description;
   final bool isAvailable;
 
   Product({
     this.id,
-    required this.tenantId,
+    this.tenantId,
     required this.name,
     required this.description,
     required this.isAvailable,
@@ -17,15 +17,15 @@ class Product {
     return Product(
       id: json['id'],
       tenantId: json['tenantId'],
-      name: json['name'],
-      description: json['description'],
-      isAvailable: json['isAvailable'],
+      name: json['name'] ?? '', // Add null check
+      description: json['description'] ?? '', // Add null check
+      isAvailable: json['isAvailable'] ?? false, // Add null check
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (id != null) 'id': id,
+      'id': id,
       'tenantId': tenantId,
       'name': name,
       'description': description,
