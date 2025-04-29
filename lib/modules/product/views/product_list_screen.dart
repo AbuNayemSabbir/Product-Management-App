@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../../../core/constants/theme_constants.dart'; 
 import '../controllers/product_controller.dart';
 
-class ProductListScreen extends StatelessWidget {
-  final ProductController _controller = Get.find<ProductController>();
+class ProductListScreen extends StatefulWidget {
+  const ProductListScreen({super.key});
 
-  ProductListScreen({super.key});
+  @override
+  State<ProductListScreen> createState() => _ProductListScreenState();
+}
+
+class _ProductListScreenState extends State<ProductListScreen> {
+
+  final ProductController _controller = Get.find<ProductController>();
 
   @override
   Widget build(BuildContext context) {
@@ -15,14 +23,17 @@ class ProductListScreen extends StatelessWidget {
         title: const Text('Products'),
         elevation: 0,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _controller.loadProducts,
-          ),
+          Obx(() => _controller.isOnline.value
+              ? SizedBox.shrink()
+              : const Text(
+                  'Offline',
+                  style: TextStyle(color: Colors.grey),
+                )),
         ],
       ),
       body: Obx(() {
-        if (_controller.isLoading.value && _controller.products.isEmpty) {
+        if (_controller.isProductLoading.value &&
+            _controller.products.isEmpty) {
           return Padding(
             padding: const EdgeInsets.all(12.0),
             child: GridView.builder(
@@ -32,7 +43,7 @@ class ProductListScreen extends StatelessWidget {
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
               ),
-              itemCount: 6, // Show 6 shimmer placeholders
+              itemCount: 6,
               itemBuilder: (context, index) {
                 return Shimmer.fromColors(
                   baseColor: Colors.grey[300]!,
@@ -69,7 +80,8 @@ class ProductListScreen extends StatelessWidget {
                                 const SizedBox(height: 8),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                         width: double.infinity,
@@ -105,13 +117,14 @@ class ProductListScreen extends StatelessWidget {
             ),
           );
         }
-        
+
         if (_controller.products.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.inventory_2_outlined, size: 80, color: Colors.grey[400]),
+                Icon(Icons.inventory_2_outlined,
+                    size: 80, color: Colors.grey[400]),
                 const SizedBox(height: 16),
                 Text(
                   'No products available',
@@ -121,7 +134,7 @@ class ProductListScreen extends StatelessWidget {
             ),
           );
         }
-        
+
         return Padding(
           padding: const EdgeInsets.all(12.0),
           child: GridView.builder(
@@ -135,7 +148,7 @@ class ProductListScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final product = _controller.products[index];
               return Card(
-                elevation: 1,
+                elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -148,18 +161,20 @@ class ProductListScreen extends StatelessWidget {
                       Container(
                         height: 80,
                         decoration: BoxDecoration(
-                          color: Color.fromRGBO(
-                            ((index * 0.1 * 0xFFFFFF).toInt() >> 16) & 0xFF,
-                            ((index * 0.1 * 0xFFFFFF).toInt() >> 8) & 0xFF,
-                            (index * 0.1 * 0xFFFFFF).toInt() & 0xFF,
-                            0.7,
-                          ),
+                          color: [
+                            Colors.teal,
+                            Colors.cyan,
+                            Colors.amber,
+                            Colors.blueGrey,
+                            Colors.indigo,
+                            Colors.lightGreen,
+                          ][index % 6]
+                              .withOpacity(0.3),
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(12),
                             topRight: Radius.circular(12),
                           ),
                         ),
-                       
                       ),
                       Expanded(
                         child: Padding(
@@ -190,12 +205,17 @@ class ProductListScreen extends StatelessWidget {
                               ),
                               Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.symmetric(vertical: 4),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: product.isAvailable ? Colors.green.shade100 : Colors.red.shade100,
+                                  color: product.isAvailable
+                                      ? AppColors.success.withOpacity(0.2)
+                                      : AppColors.error.withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(6),
                                   border: Border.all(
-                                    color: product.isAvailable ? Colors.green.shade700 : Colors.red.shade700,
+                                    color: product.isAvailable
+                                        ? AppColors.success.withOpacity(0.2)
+                                        : AppColors.error.withOpacity(0.2),
                                     width: 1,
                                   ),
                                 ),
@@ -204,17 +224,25 @@ class ProductListScreen extends StatelessWidget {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Icon(
-                                        product.isAvailable ? Icons.check_circle : Icons.cancel,
+                                        product.isAvailable
+                                            ? Icons.check_circle
+                                            : Icons.cancel,
                                         size: 12,
-                                        color: product.isAvailable ? Colors.green.shade700 : Colors.red.shade700,
+                                        color: product.isAvailable
+                                            ? AppColors.success
+                                            : AppColors.error,
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
-                                        product.isAvailable ? 'In Stock' : 'Out of Stock',
+                                        product.isAvailable
+                                            ? 'In Stock'
+                                            : 'Out of Stock',
                                         style: TextStyle(
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold,
-                                          color: product.isAvailable ? Colors.green.shade700 : Colors.red.shade700,
+                                          color: product.isAvailable
+                                              ? AppColors.success
+                                              : AppColors.error,
                                         ),
                                       ),
                                     ],
@@ -235,8 +263,8 @@ class ProductListScreen extends StatelessWidget {
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: _controller.addProduct,
-        child: const Icon(Icons.add),
         elevation: 4,
+        child: const Icon(Icons.add),
       ),
     );
   }

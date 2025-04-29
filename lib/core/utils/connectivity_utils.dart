@@ -18,7 +18,7 @@ class ConnectivityUtils extends GetxService {
     if (isConnected.value != connected) {
       isConnected.value = connected;
       if (connected) {
-        Get.snackbar('Network', 'You are online');
+        Get.snackbar('Network', 'You are online. You are connected!');
       } else {
         Get.snackbar('Network', 'You are offline');
       }

@@ -17,9 +17,9 @@ class Product {
     return Product(
       id: json['id'],
       tenantId: json['tenantId'],
-      name: json['name'] ?? '', // Add null check
-      description: json['description'] ?? '', // Add null check
-      isAvailable: json['isAvailable'] ?? false, // Add null check
+      name: json['name'] ?? '', 
+      description: json['description'] ?? '', 
+      isAvailable: json['isAvailable'] ?? false, 
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:todo/core/constants/api_constants.dart';
+import 'package:todo/core/constants/theme_constants.dart';
 import 'package:todo/data/models/product_model.dart';
 import '../controllers/product_controller.dart';
 
@@ -33,6 +34,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(Get.arguments?.id == null ? 'Add Product' : 'Edit Product'),
         elevation: 0,
       ),
@@ -62,7 +64,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     filled: true,
-                    fillColor: Colors.grey[100],
+                    fillColor: AppColors.primary.withOpacity(0.1),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -81,7 +83,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     filled: true,
-                    fillColor: Colors.grey[100],
+                    fillColor: AppColors.primary.withOpacity(0.1),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -93,9 +95,13 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 ),
                 const SizedBox(height: 20),
                 Card(
-                  elevation: 2,
+                  elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(
+                      color: AppColors.primary.withOpacity(0.2),
+                      width: 1,
+                    )
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
